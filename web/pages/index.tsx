@@ -7,7 +7,7 @@ import SideBar from '../components/index/SideBar'
 
 const Home: NextPage = () => {
   return (
-      <div>
+      <div className='h-[1000px] bg-gradient-to-r from-orange-500 to-pink-500'>
         <Header />
 
         <div className='flex justify-around'>

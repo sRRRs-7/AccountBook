@@ -1,7 +1,17 @@
 import { atom } from "recoil"
 import { deleteData, getData, listData, postData, updateData } from "../pages/api/axios"
 
-export const changeValue = atom<boolean>({
+export const isMonthState = atom({
+    key: "isMonthState",
+    default: false
+})
+
+export const sideBarState = atom<boolean>({
+    key: "sideBarState",
+    default: false,
+})
+
+export const changeValueState = atom<boolean>({
     key: "changeValue",
     default: false,
 })
@@ -10,6 +20,7 @@ export const postState = atom<postData>({
     key: "postState",
     default: {
         Payer: "",
+        Month:0,
         Food: "",
         Method: "Cash",
         Expense: 0,
@@ -24,6 +35,11 @@ export const getState = atom<getData>({
 export const getAllState = atom({
     key: "getAllState",
     default: [],
+})
+
+export const getMonthState = atom({
+    key: "getMonthState",
+    default: []
 })
 
 export const listState = atom<listData>({

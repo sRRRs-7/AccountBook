@@ -1,14 +1,15 @@
 import React, {useState, useEffect} from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { changeValue, getAllState, postState } from '../../atoms/atom'
+import { changeValueState, getAllState, postState } from '../../atoms/atom'
 import { fetchAllGet, fetchPost, postData } from '../../pages/api/axios'
 
 const Post = () => {
     const [post, setPost] = useRecoilState<postData>(postState)
     const [getAll, setGetAll] = useRecoilState(getAllState)
-    const [change, setChange] = useRecoilState(changeValue)
+    const [change, setChange] = useRecoilState(changeValueState)
     const [postValue, setPostValue] = useState<postData>({
         Payer: "",
+        Month: 1,
         Food: "",
         Method: "Cash",
         Expense: 100,
@@ -17,6 +18,7 @@ const Post = () => {
     function payerChange(e: any) {
         setPostValue({
             Payer: e.target.value,
+            Month: postValue.Month,
             Food: postValue.Food,
             Method: postValue.Method,
             Expense: postValue.Expense,
@@ -27,7 +29,19 @@ const Post = () => {
     function foodChange(e: any) {
         setPostValue({
             Payer: postValue.Payer,
+            Month: postValue.Month,
             Food: e.target.value,
+            Method: postValue.Method,
+            Expense: postValue.Expense,
+        })
+        setPost(postValue)
+    }
+
+    function monthChange(e: any) {
+        setPostValue({
+            Payer: postValue.Payer,
+            Month: e.target.value,
+            Food: postValue.Food,
             Method: postValue.Method,
             Expense: postValue.Expense,
         })
@@ -37,6 +51,7 @@ const Post = () => {
     function methodChange(e: any) {
         setPostValue({
             Payer: postValue.Payer,
+            Month: postValue.Month,
             Food: postValue.Food,
             Method: e.target.value,
             Expense: postValue.Expense,
@@ -47,6 +62,7 @@ const Post = () => {
     function expenseChange(e: any) {
         setPostValue({
             Payer: postValue.Payer,
+            Month: postValue.Month,
             Food: postValue.Food,
             Method: postValue.Method,
             Expense: e.target.value,
@@ -56,12 +72,13 @@ const Post = () => {
 
     async function onClickHandler(e: any) {
         e.preventDefault()
-        const { data }  = await fetchPost(postValue)
+        const { data }: any  = await fetchPost(postValue)
         setPost(postValue)
         console.log(data)
 
         setPostValue({
             Payer: "",
+            Month: 1,
             Food: "",
             Method: "Cash",
             Expense: 100,
@@ -71,7 +88,7 @@ const Post = () => {
     }
 
     return (
-        <div className='m-7 p-5 bg-orange-300 max-w-full w-[40%] md:w-[25%] lg:w-[25%] max-h-full h-[50%] space-y-2 rounded-2xl'>
+        <div className='ml-10 mt-28 p-5 bg-gradient-to-r from-pink-500 to-orange-500 max-w-full w-[40%] md:w-[25%] lg:w-[25%] max-h-full h-[50%] space-y-2 rounded-2xl'>
             <div className='mx-7 text-lg'>
                 <h1>What have you ate today?</h1>
             </div>
@@ -83,6 +100,26 @@ const Post = () => {
                 onChange={payerChange}
                 className="ml-5 p-3 w-[150px] h-[30px] rounded-lg"
             />
+
+            <p>Month</p>
+            <select
+                name="method"
+                onChange={monthChange}
+                className="ml-5 py-1 px-2 w-[150px] h-[30px] rounded-lg"
+            >
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
 
             <p>Food</p>
             <input

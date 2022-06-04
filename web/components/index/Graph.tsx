@@ -3,18 +3,22 @@ import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
 import { fetchAllGet } from "../../pages/api/axios";
-import { changeValue, getAllState, getState } from "../../atoms/atom";
+import { changeValueState, getAllState, getMonthState, getState, isMonthState } from "../../atoms/atom";
 import { useRecoilState } from "recoil";
 
 
 export default function Graph() {
   const [recoilData, setRecoilData] = useRecoilState(getAllState)
-  const [change, setChange] = useRecoilState(changeValue)
+  const [postChange, setPostChange] = useRecoilState(changeValueState)
+  const [isMonth, setIsMonth] = useRecoilState<boolean>(isMonthState)
+  const [monthData, setMonthData] = useRecoilState(getMonthState)
+
+  const [initial, setInitial] = useState<boolean>(true)
   const [stateData, setStateData] = useState([])
-  const [active, setActive] = useState(null);
-  const [totalExpense, setTotalExpense] = useState(0)
-  const width = 400;
-  const height = 400
+  const [active, setActive] = useState(null)
+  const [totalExpense, setTotalExpense] = useState<number>(0)
+  const width = 500;
+  const height = 500
   const half = width / 2;
   const accounts = [
     {
@@ -29,33 +33,47 @@ export default function Graph() {
     }as const,
   ];
 
-  async function sum(data) {
+  async function sum(data: any) {
     setRecoilData(data)
-    const total = data.reduce((prev, data) => prev + data.expense, 0)
+    const total = data.reduce((prev: any, data: any) => prev + data.expense, 0)
     setTotalExpense(total)
+    console.log(total)
   }
 
   useEffect(() => {
     const f1 = async() => {
-      if (!change) {
-        const { data } = await fetchAllGet()
+      if (!postChange && !isMonth && initial){
+        const { data }: any = await fetchAllGet()
         setStateData(data)
         await sum(data)
-        setChange(!change)
+        setInitial(!initial)
+      }
+
+      if (postChange) {
+        const { data }: any = await fetchAllGet()
+        setStateData(data)
+        await sum(data)
+        setPostChange(!postChange)
+      }
+
+      if (isMonth) {
+        setStateData(monthData)
+        await sum(monthData)
+        setIsMonth(!isMonth)
       }
 
     };
     f1();
-  },[setRecoilData, change])
+  },[isMonth, setRecoilData, postChange])
 
   return (
-    <main className="p-10 m-10 bg-orange-500 rounded-3xl">
+    <main className="p-10 m-10 bg-gradient-to-r from-pink-500 to-orange-500 rounded-3xl">
       <svg width={width} height={height}>
         <Group top={half} left={half}>
           <Pie
             data={accounts}
             pieValue={(data) => data.balance}
-            outerRadius={140}
+            outerRadius={170}
             innerRadius={({ data }) => {
               const size = active && active.class == data.class ? 3 : 9;
               return half - size;
@@ -81,7 +99,7 @@ export default function Graph() {
             <>
               <Text
                 textAnchor="middle"
-                fill={active.color}
+                fill={"#fff"}
                 fontSize={30}
                 dy={50}
               >

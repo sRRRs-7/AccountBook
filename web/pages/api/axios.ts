@@ -4,6 +4,7 @@ const url = "http://127.0.0.1:8080"
 
 export type postData = {
     Payer:   string,
+    Month:   number,
 	Food:    string,
 	Method:  string,
 	Expense: number,
@@ -20,6 +21,7 @@ export async function fetchPost(value: postData) {
             responseType : 'json',
             data: {
                 Payer: value.Payer,
+                Month: Number(value.Month),
                 Food:value.Food,
                 Method: value.Method,
                 Expense: Number(value.Expense),
@@ -43,6 +45,23 @@ export function fetchGet(id: number) {
         axios({
             method : 'GET',
             url    : `${url}/get/${id}`,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            responseType: 'json',
+        }).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export function fetchGetMonth(month: number) {
+    return new Promise((resolve, reject) => {
+        axios({
+            method : 'GET',
+            url    : `${url}/month/${month}`,
             headers: {
                 "Content-Type": "application/json",
             },
