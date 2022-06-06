@@ -19,7 +19,7 @@ const Header = () => {
             </h1>
             <Link href="/analytics">
                 <a className='text-2xl font-sans text-blue-200 hover:cursor-pointer hover:scale-105'>
-                    Analytics
+                    statics
                 </a>
             </Link>
         </div>
